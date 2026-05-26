@@ -182,6 +182,15 @@
       <div class="briefing-layout">
         <form class="control-panel" id="githubForm">
           <label>
+            <span>模式</span>
+            <select id="githubMode">
+              <option value="trending">🔥 热门趋势</option>
+              <option value="quality">⭐ 优质项目（≥50 stars）</option>
+              <option value="new">🆕 最新发布</option>
+              <option value="fastest">🚀 增速最快</option>
+            </select>
+          </label>
+          <label>
             <span>语言</span>
             <select id="githubLanguage">
               <option value="all">全部语言</option>
@@ -191,6 +200,9 @@
               <option value="Go">Go</option>
               <option value="Rust">Rust</option>
               <option value="C++">C++</option>
+              <option value="Java">Java</option>
+              <option value="Swift">Swift</option>
+              <option value="Kotlin">Kotlin</option>
             </select>
           </label>
           <label>
@@ -202,7 +214,16 @@
               <option value="30">近 30 天</option>
             </select>
           </label>
+          <label>
+            <span>排序</span>
+            <select id="githubSort">
+              <option value="stars">Stars 数</option>
+              <option value="forks">Forks 数</option>
+              <option value="updated">最近更新</option>
+            </select>
+          </label>
           <button type="submit">扫描仓库</button>
+          <button type="button" id="useDemoRepos">载入演示</button>
           <p id="githubStatus" class="status-text">等待扫描 GitHub Radar。</p>
         </form>
 
