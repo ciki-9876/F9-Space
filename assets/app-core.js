@@ -7,6 +7,7 @@
 })(typeof self !== "undefined" ? self : this, function () {
   const NOTES_KEY = "f9-space.notes.v1";
   const NEWS_KEY = "f9-space.ai-news-cache.v1";
+  const AI_CONFIG_KEY = "f9-space.ai-config.v1";
 
   function createId(prefix) {
     return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -117,6 +118,72 @@
     });
   }
 
+  function filterGithubReposByStars(repos, minimumStars) {
+    const threshold = Number(minimumStars || 0);
+    return repos.filter(function (repo) {
+      return Number(repo.stars || 0) >= threshold;
+    });
+  }
+
+  function normalizeAiConfig(input) {
+    return {
+      baseUrl: String(input && input.baseUrl ? input.baseUrl : "").trim().replace(/\/+$/, ""),
+      apiKey: String(input && input.apiKey ? input.apiKey : "").trim(),
+      model: String(input && input.model ? input.model : "gpt-4.1-mini").trim()
+    };
+  }
+
+  function readAiConfig(storage) {
+    return normalizeAiConfig(readJson(storage, AI_CONFIG_KEY, {
+      baseUrl: "",
+      apiKey: "",
+      model: "gpt-4.1-mini"
+    }));
+  }
+
+  function saveAiConfig(storage, input) {
+    return writeJson(storage, AI_CONFIG_KEY, normalizeAiConfig(input));
+  }
+
+  function buildRepoAnalysisPrompt(repo) {
+    return [
+      "用中文分析这个 GitHub 仓库，面向个人技术雷达用户。",
+      "请输出：1. 一句话判断；2. 它解决什么问题；3. 为什么近期值得关注；4. 适合谁使用；5. 潜在风险或噪音。",
+      "",
+      `仓库：${repo.name}`,
+      `描述：${repo.description || "无"}`,
+      `语言：${repo.language || "Unknown"}`,
+      `Stars：${repo.stars || 0}`,
+      `Forks：${repo.forks || 0}`,
+      `地址：${repo.url}`
+    ].join("\n");
+  }
+
+  function buildRepoAnalysisRequest(repo, config) {
+    const normalized = normalizeAiConfig(config);
+    return {
+      url: `${normalized.baseUrl}/chat/completions`,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${normalized.apiKey}`
+      },
+      body: {
+        model: normalized.model,
+        temperature: 0.4,
+        messages: [
+          {
+            role: "system",
+            content: "你是一个谨慎的中文技术分析助手，专长是快速评估开源仓库的实际价值。"
+          },
+          {
+            role: "user",
+            content: buildRepoAnalysisPrompt(repo)
+          }
+        ]
+      }
+    };
+  }
+
   function normalizeNewsItems(payload) {
     const items = payload && Array.isArray(payload.items) ? payload.items : [];
     return items.map(function (item, index) {
@@ -146,15 +213,20 @@
   return {
     NOTES_KEY,
     NEWS_KEY,
+    AI_CONFIG_KEY,
     buildAiNewsProxyUrl,
     buildAiHotUrl,
     buildGithubTrendingUrl,
+    buildRepoAnalysisRequest,
     cacheNews,
     deleteNote,
+    filterGithubReposByStars,
     listNotes,
     normalizeGithubRepos,
     normalizeNewsItems,
+    readAiConfig,
     readCachedNews,
+    saveAiConfig,
     saveNote,
     searchNotes
   };

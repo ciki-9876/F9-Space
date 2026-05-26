@@ -1,16 +1,17 @@
 const storage = window.localStorage;
+
 const demoNews = [
   {
     title: "AI HOT 精选情报待机",
-    summary: "点击刷新情报会请求 aihot.virxact.com 的公开接口。若本地网络或 CORS 受限，可先使用腾讯云函数代理。",
+    summary: "点击刷新情报会请求 AI HOT 公开接口。若网络或 CORS 受限，可通过同源代理读取。",
     source: "F9 Space",
     url: "https://aihot.virxact.com",
     category: "selected",
     publishedAt: new Date().toISOString()
   },
   {
-    title: "长期维护建议：定时缓存，不让浏览器直连所有上游",
-    summary: "云函数每天定时拉取 AI HOT 精选数据，写入 COS 或数据库，前端只读你的稳定 API。",
+    title: "长期维护建议：定时缓存新闻源",
+    summary: "服务器定时拉取 AI HOT 精选数据，前端只读取稳定的 /api/ai-news。",
     source: "Architecture",
     url: "https://github.com/KKKKhazix/khazix-skills",
     category: "deployment",
@@ -18,11 +19,11 @@ const demoNews = [
   }
 ];
 
-let currentImage = "";
 const demoRepos = [
   {
+    id: "demo-radar",
     name: "open-source/radar-placeholder",
-    description: "GitHub Radar 会通过 /api/github-trending 查询近期新建、按星标增长排序的仓库。",
+    description: "GitHub Radar 会通过 /api/github-trending 查询近期新建、按 stars 排序的仓库，并过滤 500 stars 以下结果。",
     url: "https://github.com/trending",
     language: "Mixed",
     stars: 1024,
@@ -30,6 +31,7 @@ const demoRepos = [
     createdAt: new Date().toISOString()
   },
   {
+    id: "demo-proxy",
     name: "f9-space/server-proxy",
     description: "线上建议由 Nginx 或云函数代理 GitHub API，后续可以加缓存和 GitHub Token 提升限额。",
     url: "https://docs.github.com/rest/search/search",
@@ -39,6 +41,9 @@ const demoRepos = [
     createdAt: new Date().toISOString()
   }
 ];
+
+let currentImage = "";
+let currentRepos = [];
 
 function formatDate(value) {
   if (!value) return "Unknown time";
@@ -50,6 +55,18 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, function (char) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[char];
+  });
+}
+
 function renderNews(items) {
   const grid = document.querySelector("#newsGrid");
   document.querySelector("#signalCount").textContent = String(items.length).padStart(2, "0");
@@ -57,12 +74,42 @@ function renderNews(items) {
     return `
       <article class="news-card">
         <div class="card-meta">
-          <span>${item.source}</span>
+          <span>${escapeHtml(item.source)}</span>
           <time>${formatDate(item.publishedAt)}</time>
         </div>
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.summary || "暂无摘要，打开来源继续阅读。")}</p>
         <a href="${item.url}" target="_blank" rel="noreferrer">打开来源</a>
+      </article>
+    `;
+  }).join("");
+}
+
+function renderRepos(repos) {
+  const grid = document.querySelector("#repoGrid");
+  currentRepos = F9Core.filterGithubReposByStars(repos, 500);
+  if (!currentRepos.length) {
+    grid.innerHTML = '<div class="empty-state">没有找到 500 stars 以上的近期仓库。换个时间窗口或语言试试。</div>';
+    return;
+  }
+
+  grid.innerHTML = currentRepos.map(function (repo) {
+    return `
+      <article class="repo-card" data-repo-id="${escapeHtml(String(repo.id))}">
+        <div class="card-meta">
+          <span>${escapeHtml(repo.language)}</span>
+          <time>${formatDate(repo.createdAt)}</time>
+        </div>
+        <h3>${escapeHtml(repo.name)}</h3>
+        <p>${escapeHtml(repo.description)}</p>
+        <div class="repo-stats">
+          <span>${Number(repo.stars).toLocaleString()} stars</span>
+          <span>${Number(repo.forks).toLocaleString()} forks</span>
+        </div>
+        <div class="repo-actions">
+          <button type="button" data-action="analyze">分析仓库</button>
+          <a href="${repo.url}" target="_blank" rel="noreferrer">访问仓库</a>
+        </div>
       </article>
     `;
   }).join("");
@@ -95,46 +142,18 @@ function renderNotes() {
   }).join("");
 }
 
-function renderRepos(repos) {
-  const grid = document.querySelector("#repoGrid");
-  grid.innerHTML = repos.map(function (repo) {
-    return `
-      <article class="repo-card">
-        <div class="card-meta">
-          <span>${escapeHtml(repo.language)}</span>
-          <time>${formatDate(repo.createdAt)}</time>
-        </div>
-        <h3>${escapeHtml(repo.name)}</h3>
-        <p>${escapeHtml(repo.description)}</p>
-        <div class="repo-stats">
-          <span>${Number(repo.stars).toLocaleString()} stars</span>
-          <span>${Number(repo.forks).toLocaleString()} forks</span>
-        </div>
-        <a href="${repo.url}" target="_blank" rel="noreferrer">打开仓库</a>
-      </article>
-    `;
-  }).join("");
-}
-
-async function fetchGithubTrending(event) {
-  event.preventDefault();
-  const status = document.querySelector("#githubStatus");
-  const language = document.querySelector("#githubLanguage").value;
-  const days = document.querySelector("#githubDays").value;
-  const url = F9Core.buildGithubTrendingUrl({ language, days, take: 12 });
-  status.textContent = "正在扫描 GitHub 热门仓库...";
-
-  try {
-    const response = await fetch(url, { headers: { "Accept": "application/json" } });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const payload = await response.json();
-    const repos = F9Core.normalizeGithubRepos(payload);
-    renderRepos(repos);
-    status.textContent = `已扫描 ${repos.length} 个近期热门仓库。`;
-  } catch (error) {
-    renderRepos(demoRepos);
-    status.textContent = `GitHub Radar 暂不可用，已载入演示。需要配置 /api/github-trending 代理。`;
+async function fetchFirstJson(urls) {
+  const errors = [];
+  for (const url of urls) {
+    try {
+      const response = await fetch(url, { headers: { "Accept": "application/json" } });
+      if (!response.ok) throw new Error(`${url} HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      errors.push(error.message);
+    }
   }
+  throw new Error(errors.join("; "));
 }
 
 async function fetchNews(event) {
@@ -160,23 +179,80 @@ async function fetchNews(event) {
       status.textContent = `情报代理暂不可用，显示缓存：${error.message}`;
     } else {
       renderNews(demoNews);
-      status.textContent = `情报代理暂不可用，已载入演示。需要在服务器配置 /api/ai-news 代理。`;
+      status.textContent = "情报代理暂不可用，已载入演示。需要在服务器配置 /api/ai-news 代理。";
     }
   }
 }
 
-async function fetchFirstJson(urls) {
-  const errors = [];
-  for (const url of urls) {
-    try {
-      const response = await fetch(url, { headers: { "Accept": "application/json" } });
-      if (!response.ok) throw new Error(`${url} HTTP ${response.status}`);
-      return await response.json();
-    } catch (error) {
-      errors.push(error.message);
-    }
+async function fetchGithubTrending(event) {
+  event.preventDefault();
+  const status = document.querySelector("#githubStatus");
+  const language = document.querySelector("#githubLanguage").value;
+  const days = document.querySelector("#githubDays").value;
+  const url = F9Core.buildGithubTrendingUrl({ language, days, take: 24 });
+  status.textContent = "正在扫描 GitHub 热门仓库...";
+
+  try {
+    const response = await fetch(url, { headers: { "Accept": "application/json" } });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    const repos = F9Core.filterGithubReposByStars(F9Core.normalizeGithubRepos(payload), 500);
+    renderRepos(repos);
+    status.textContent = `已扫描 ${repos.length} 个 500 stars 以上的近期热门仓库。`;
+  } catch (error) {
+    renderRepos(demoRepos);
+    status.textContent = "GitHub Radar 暂不可用，已载入演示。需要配置 /api/github-trending 代理。";
   }
-  throw new Error(errors.join("; "));
+}
+
+function loadAiConfigForm() {
+  const config = F9Core.readAiConfig(storage);
+  document.querySelector("#aiBaseUrl").value = config.baseUrl;
+  document.querySelector("#aiApiKey").value = config.apiKey;
+  document.querySelector("#aiModel").value = config.model;
+}
+
+function saveAiConfigForm(event) {
+  event.preventDefault();
+  F9Core.saveAiConfig(storage, {
+    baseUrl: document.querySelector("#aiBaseUrl").value,
+    apiKey: document.querySelector("#aiApiKey").value,
+    model: document.querySelector("#aiModel").value
+  });
+  document.querySelector("#aiConfigStatus").textContent = "AI API 配置已保存在当前浏览器。";
+}
+
+async function analyzeRepository(repo) {
+  const dialog = document.querySelector("#analysisDialog");
+  const body = document.querySelector("#analysisBody");
+  const title = document.querySelector("#analysisTitle");
+  const repoLink = document.querySelector("#analysisRepoLink");
+  const config = F9Core.readAiConfig(storage);
+  title.textContent = repo.name;
+  repoLink.href = repo.url;
+  body.textContent = "正在请求 AI 分析...";
+  dialog.showModal();
+
+  if (!config.baseUrl || !config.apiKey || !config.model) {
+    body.textContent = "请先在 AI API Config 中填写 Base URL、API Key 和模型。";
+    return;
+  }
+
+  try {
+    const request = F9Core.buildRepoAnalysisRequest(repo, config);
+    const response = await fetch(request.url, {
+      method: "POST",
+      headers: request.headers,
+      body: JSON.stringify(request.body)
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    body.textContent = payload.choices && payload.choices[0] && payload.choices[0].message
+      ? payload.choices[0].message.content
+      : "AI 返回了空分析结果。";
+  } catch (error) {
+    body.textContent = `分析失败：${error.message}`;
+  }
 }
 
 function saveCurrentNote(event) {
@@ -221,18 +297,6 @@ function updateImagePreview() {
   wrap.hidden = false;
 }
 
-function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, function (char) {
-    return {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    }[char];
-  });
-}
-
 function startStarfield() {
   const canvas = document.querySelector("#starfield");
   const context = canvas.getContext("2d");
@@ -268,12 +332,22 @@ function startStarfield() {
 
 document.querySelector("#newsForm").addEventListener("submit", fetchNews);
 document.querySelector("#githubForm").addEventListener("submit", fetchGithubTrending);
+document.querySelector("#aiConfigForm").addEventListener("submit", saveAiConfigForm);
 document.querySelector("#useDemoNews").addEventListener("click", function () {
   F9Core.cacheNews(storage, demoNews);
   renderNews(demoNews);
   document.querySelector("#newsStatus").textContent = "已载入演示情报。";
 });
-
+document.querySelector("#repoGrid").addEventListener("click", function (event) {
+  const button = event.target.closest("button");
+  const card = event.target.closest(".repo-card");
+  if (!button || !card || button.dataset.action !== "analyze") return;
+  const repo = currentRepos.find(function (item) { return String(item.id) === card.dataset.repoId; });
+  if (repo) analyzeRepository(repo);
+});
+document.querySelector("#closeAnalysis").addEventListener("click", function () {
+  document.querySelector("#analysisDialog").close();
+});
 document.querySelector("#noteForm").addEventListener("submit", saveCurrentNote);
 document.querySelector("#resetNote").addEventListener("click", resetEditor);
 document.querySelector("#clearImage").addEventListener("click", function () {
@@ -302,6 +376,7 @@ document.querySelector("#noteList").addEventListener("click", function (event) {
   }
 });
 
+loadAiConfigForm();
 startStarfield();
 renderNews(F9Core.readCachedNews(storage).items.length ? F9Core.readCachedNews(storage).items : demoNews);
 renderRepos(demoRepos);

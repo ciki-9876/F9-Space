@@ -315,6 +315,7 @@ button:hover {
 }
 
 .control-panel,
+.ai-config-panel,
 .note-editor,
 .note-list-panel {
   border: 1px solid var(--line);
@@ -324,12 +325,23 @@ button:hover {
 }
 
 .control-panel,
+.ai-config-panel,
 .note-editor {
   position: sticky;
   top: 18px;
   display: grid;
   gap: 16px;
   padding: 18px;
+}
+
+.ai-config-panel {
+  position: static;
+  grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) minmax(160px, 0.7fr) auto;
+  align-items: end;
+}
+
+.ai-config-panel .status-text {
+  grid-column: 1 / -1;
 }
 
 label {
@@ -390,7 +402,10 @@ textarea:focus {
 .news-card,
 .repo-card {
   min-height: 250px;
+  max-height: 360px;
+  overflow-y: auto;
   padding: 18px;
+  scrollbar-color: rgba(117, 255, 215, 0.5) rgba(5, 12, 11, 0.5);
 }
 
 .card-meta {
@@ -434,6 +449,73 @@ textarea:focus {
   color: var(--amber);
   font-family: "Orbitron", sans-serif;
   font-size: 0.75rem;
+}
+
+.repo-actions,
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.repo-actions button,
+.repo-actions a,
+.dialog-actions a {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  padding: 8px 11px;
+  color: var(--text);
+  background: rgba(5, 12, 11, 0.5);
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.76rem;
+}
+
+.repo-actions button {
+  color: var(--ink);
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--mint), var(--amber));
+  font-weight: 700;
+}
+
+.analysis-dialog {
+  width: min(760px, calc(100% - 28px));
+  border: 1px solid var(--line);
+  color: var(--text);
+  background: rgba(8, 16, 15, 0.96);
+  box-shadow: var(--shadow);
+  padding: 0;
+}
+
+.analysis-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(5px);
+}
+
+.dialog-shell {
+  padding: 22px;
+}
+
+.dialog-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.dialog-head h3 {
+  margin: 0;
+}
+
+.analysis-body {
+  max-height: 52vh;
+  overflow-y: auto;
+  margin-top: 18px;
+  border: 1px solid rgba(145, 242, 216, 0.18);
+  padding: 16px;
+  color: var(--muted);
+  line-height: 1.85;
+  white-space: pre-wrap;
 }
 
 .preview-wrap {
@@ -549,8 +631,13 @@ textarea:focus {
   }
 
   .control-panel,
+  .ai-config-panel,
   .note-editor {
     position: static;
+  }
+
+  .ai-config-panel {
+    grid-template-columns: 1fr;
   }
 
   .news-grid,

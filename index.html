@@ -20,6 +20,7 @@
         <span>Space</span>
       </a>
       <div class="nav-links">
+        <a href="#ai-config">AI Config</a>
         <a href="#briefing">AI Briefing</a>
         <a href="#github">GitHub</a>
         <a href="#notes">Notes</a>
@@ -61,6 +62,31 @@
   </header>
 
   <main>
+    <section id="ai-config" class="shell command-section">
+      <div class="section-heading">
+        <p class="eyebrow">System</p>
+        <h2>AI API Config</h2>
+        <p>配置 OpenAI-compatible API，用于 GitHub 仓库中文分析。配置只保存在当前浏览器，不会上传到服务器。</p>
+      </div>
+
+      <form class="ai-config-panel" id="aiConfigForm">
+        <label>
+          <span>Base URL</span>
+          <input id="aiBaseUrl" type="url" placeholder="https://api.openai.com/v1">
+        </label>
+        <label>
+          <span>API Key</span>
+          <input id="aiApiKey" type="password" placeholder="sk-...">
+        </label>
+        <label>
+          <span>Model</span>
+          <input id="aiModel" type="text" placeholder="gpt-4.1-mini">
+        </label>
+        <button type="submit">保存配置</button>
+        <p id="aiConfigStatus" class="status-text">等待配置 AI API。</p>
+      </form>
+    </section>
+
     <section id="briefing" class="shell command-section">
       <div class="section-heading">
         <p class="eyebrow">Function 01</p>
@@ -179,7 +205,23 @@
     <span>Static frontend now. Tencent Cloud API later.</span>
   </footer>
 
-  <script src="assets/app-core.js?v=20260526-github-radar"></script>
-  <script src="assets/main.js?v=20260526-github-radar"></script>
+  <dialog class="analysis-dialog" id="analysisDialog">
+    <div class="dialog-shell">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">Repository analysis</p>
+          <h3 id="analysisTitle">仓库分析</h3>
+        </div>
+        <button type="button" id="closeAnalysis">关闭</button>
+      </div>
+      <div class="analysis-body" id="analysisBody"></div>
+      <div class="dialog-actions">
+        <a id="analysisRepoLink" href="#" target="_blank" rel="noreferrer">访问仓库</a>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="assets/app-core.js?v=20260526-ai-config"></script>
+  <script src="assets/main.js?v=20260526-ai-config"></script>
 </body>
 </html>

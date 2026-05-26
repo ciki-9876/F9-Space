@@ -133,3 +133,55 @@ test("normalizeGithubRepos maps GitHub API repos into card data", () => {
     ownerAvatar: "https://example.com/avatar.png"
   });
 });
+
+test("filterGithubReposByStars removes repositories below the minimum", () => {
+  const repos = [
+    { name: "low/star", stars: 499 },
+    { name: "high/star", stars: 500 },
+    { name: "higher/star", stars: 1200 }
+  ];
+
+  assert.deepEqual(
+    core.filterGithubReposByStars(repos, 500).map((repo) => repo.name),
+    ["high/star", "higher/star"]
+  );
+});
+
+test("save and read AI config from storage", () => {
+  const storage = memoryStorage();
+  core.saveAiConfig(storage, {
+    baseUrl: "https://api.openai.com/v1",
+    apiKey: "sk-test",
+    model: "gpt-4.1-mini"
+  });
+
+  assert.deepEqual(core.readAiConfig(storage), {
+    baseUrl: "https://api.openai.com/v1",
+    apiKey: "sk-test",
+    model: "gpt-4.1-mini"
+  });
+});
+
+test("buildRepoAnalysisRequest creates an OpenAI-compatible request", () => {
+  const request = core.buildRepoAnalysisRequest(
+    {
+      name: "octo/example",
+      description: "Example repo",
+      language: "TypeScript",
+      stars: 800,
+      forks: 30,
+      url: "https://github.com/octo/example"
+    },
+    {
+      baseUrl: "https://api.openai.com/v1/",
+      apiKey: "sk-test",
+      model: "gpt-4.1-mini"
+    }
+  );
+
+  assert.equal(request.url, "https://api.openai.com/v1/chat/completions");
+  assert.equal(request.headers.Authorization, "Bearer sk-test");
+  assert.equal(request.body.model, "gpt-4.1-mini");
+  assert.match(request.body.messages[1].content, /用中文分析这个 GitHub 仓库/);
+  assert.match(request.body.messages[1].content, /octo\/example/);
+});
