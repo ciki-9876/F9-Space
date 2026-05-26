@@ -81,13 +81,12 @@ async function fetchNews(event) {
   const category = document.querySelector("#newsCategory").value;
   const query = document.querySelector("#newsQuery").value.trim();
   const since = new Date(Date.now() - 36 * 60 * 60 * 1000).toISOString();
-  const url = F9Core.buildAiHotUrl({ category, query, since, take: 12 });
-  status.textContent = "正在连接 AI HOT 情报源...";
+  const options = { category, query, since, take: 12 };
+  const urls = [F9Core.buildAiNewsProxyUrl(options), F9Core.buildAiHotUrl(options)];
+  status.textContent = "正在连接同源情报代理...";
 
   try {
-    const response = await fetch(url, { headers: { "Accept": "application/json" } });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const payload = await response.json();
+    const payload = await fetchFirstJson(urls);
     const items = F9Core.normalizeNewsItems(payload);
     F9Core.cacheNews(storage, items);
     renderNews(items);
@@ -96,12 +95,26 @@ async function fetchNews(event) {
     const cached = F9Core.readCachedNews(storage);
     if (cached.items.length) {
       renderNews(cached.items);
-      status.textContent = `远端暂不可用，显示缓存：${error.message}`;
+      status.textContent = `情报代理暂不可用，显示缓存：${error.message}`;
     } else {
       renderNews(demoNews);
-      status.textContent = `远端暂不可用，已载入演示：${error.message}`;
+      status.textContent = `情报代理暂不可用，已载入演示。需要在服务器配置 /api/ai-news 代理。`;
     }
   }
+}
+
+async function fetchFirstJson(urls) {
+  const errors = [];
+  for (const url of urls) {
+    try {
+      const response = await fetch(url, { headers: { "Accept": "application/json" } });
+      if (!response.ok) throw new Error(`${url} HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      errors.push(error.message);
+    }
+  }
+  throw new Error(errors.join("; "));
 }
 
 function saveCurrentNote(event) {

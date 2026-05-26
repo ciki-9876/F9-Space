@@ -56,6 +56,16 @@ test("buildAiHotUrl defaults to selected AI HOT items and accepts filters", () =
   );
 });
 
+test("buildAiNewsProxyUrl keeps AI news requests same-origin", () => {
+  const url = core.buildAiNewsProxyUrl({
+    category: "paper",
+    query: "RAG",
+    take: 6
+  });
+
+  assert.equal(url, "/api/ai-news?mode=selected&take=6&category=paper&q=RAG");
+});
+
 test("normalizeNewsItems maps AI HOT payloads into card data", () => {
   const items = core.normalizeNewsItems({
     items: [

@@ -78,6 +78,16 @@
     return `https://aihot.virxact.com/api/public/items?${params.toString()}`;
   }
 
+  function buildAiNewsProxyUrl(options) {
+    const params = new URLSearchParams();
+    params.set("mode", options && options.mode ? options.mode : "selected");
+    params.set("take", String(options && options.take ? options.take : 12));
+    if (options && options.category && options.category !== "all") params.set("category", options.category);
+    if (options && options.query) params.set("q", options.query);
+    if (options && options.since) params.set("since", options.since);
+    return `/api/ai-news?${params.toString()}`;
+  }
+
   function normalizeNewsItems(payload) {
     const items = payload && Array.isArray(payload.items) ? payload.items : [];
     return items.map(function (item, index) {
@@ -107,6 +117,7 @@
   return {
     NOTES_KEY,
     NEWS_KEY,
+    buildAiNewsProxyUrl,
     buildAiHotUrl,
     cacheNews,
     deleteNote,

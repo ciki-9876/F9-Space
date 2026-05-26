@@ -36,6 +36,27 @@ https://aihot.virxact.com/api/public/items?mode=selected&take=12
 GET https://你的域名/api/ai-news
 ```
 
+当前前端已经优先请求同源路径 `/api/ai-news`。如果没有配置这个代理，浏览器直连 AI HOT 可能被 CORS 拦截，页面会显示演示数据。
+
+在 Nginx 里可以先用反向代理快速解决：
+
+```nginx
+location /api/ai-news {
+    proxy_pass https://aihot.virxact.com/api/public/items;
+    proxy_ssl_server_name on;
+    proxy_set_header Host aihot.virxact.com;
+    proxy_set_header User-Agent "Mozilla/5.0";
+    proxy_set_header Accept "application/json";
+}
+```
+
+放到你的 `server { ... }` 里面，然后执行：
+
+```bash
+nginx -t
+systemctl reload nginx
+```
+
 腾讯云函数逻辑：
 
 1. 每天 08:05、12:05、18:05 定时触发。

@@ -17,6 +17,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -438,9 +442,9 @@ textarea:focus {
 
 .note-card {
   display: grid;
-  grid-template-columns: 170px 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
-  padding: 14px;
+  padding: 22px;
 }
 
 .note-card > div {
@@ -454,9 +458,11 @@ textarea:focus {
 }
 
 .note-card p {
-  max-height: 8.8em;
-  overflow: hidden;
+  max-width: 68ch;
+  margin-bottom: 18px;
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
+  word-break: normal;
 }
 
 .note-actions {

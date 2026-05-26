@@ -46,6 +46,14 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
+    location /api/ai-news {
+        proxy_pass https://aihot.virxact.com/api/public/items;
+        proxy_ssl_server_name on;
+        proxy_set_header Host aihot.virxact.com;
+        proxy_set_header User-Agent "Mozilla/5.0";
+        proxy_set_header Accept "application/json";
+    }
+
     location ~* \.(css|js|png|jpg|jpeg|gif|svg|ico|webp)$ {
         expires 7d;
         add_header Cache-Control "public";
