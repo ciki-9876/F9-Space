@@ -31,9 +31,9 @@ jobs:
 
       - name: Prepare SSH
         env:
-          TENCENT_HOST: ${{ secrets.TENCENT_HOST }}
+          TENCENT_HOST: ${{ secrets.TENCENT_HOST || vars.TENCENT_HOST }}
           TENCENT_SSH_KEY: ${{ secrets.TENCENT_SSH_KEY }}
-          TENCENT_PORT: ${{ secrets.TENCENT_PORT }}
+          TENCENT_PORT: ${{ secrets.TENCENT_PORT || vars.TENCENT_PORT }}
         run: |
           if [ -z "$TENCENT_HOST" ]; then
             echo "::error::Missing GitHub secret: TENCENT_HOST"
@@ -53,9 +53,9 @@ jobs:
 
       - name: Upload bundle
         env:
-          TENCENT_HOST: ${{ secrets.TENCENT_HOST }}
-          TENCENT_USER: ${{ secrets.TENCENT_USER }}
-          TENCENT_PORT: ${{ secrets.TENCENT_PORT }}
+          TENCENT_HOST: ${{ secrets.TENCENT_HOST || vars.TENCENT_HOST }}
+          TENCENT_USER: ${{ secrets.TENCENT_USER || vars.TENCENT_USER }}
+          TENCENT_PORT: ${{ secrets.TENCENT_PORT || vars.TENCENT_PORT }}
         run: |
           scp -P "${TENCENT_PORT:-22}" -i ~/.ssh/tencent_deploy_key \
             f9-space-site.tar.gz \
@@ -63,10 +63,10 @@ jobs:
 
       - name: Release on server
         env:
-          TENCENT_HOST: ${{ secrets.TENCENT_HOST }}
-          TENCENT_USER: ${{ secrets.TENCENT_USER }}
-          TENCENT_PORT: ${{ secrets.TENCENT_PORT }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          TENCENT_HOST: ${{ secrets.TENCENT_HOST || vars.TENCENT_HOST }}
+          TENCENT_USER: ${{ secrets.TENCENT_USER || vars.TENCENT_USER }}
+          TENCENT_PORT: ${{ secrets.TENCENT_PORT || vars.TENCENT_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || vars.DEPLOY_PATH }}
         run: |
           ssh -p "${TENCENT_PORT:-22}" -i ~/.ssh/tencent_deploy_key \
             "${TENCENT_USER:-root}@${TENCENT_HOST}" \
