@@ -89,3 +89,47 @@ test("normalizeNewsItems maps AI HOT payloads into card data", () => {
     publishedAt: "2026-05-26T00:00:00Z"
   });
 });
+
+test("buildGithubTrendingUrl creates a same-origin GitHub search request", () => {
+  const url = core.buildGithubTrendingUrl({
+    language: "JavaScript",
+    days: 3,
+    take: 10
+  });
+
+  assert.match(url, /^\/api\/github-trending\?/);
+  assert.match(url, /sort=stars/);
+  assert.match(url, /order=desc/);
+  assert.match(url, /per_page=10/);
+  assert.match(decodeURIComponent(url), /language:JavaScript/);
+});
+
+test("normalizeGithubRepos maps GitHub API repos into card data", () => {
+  const repos = core.normalizeGithubRepos({
+    items: [
+      {
+        id: 1,
+        full_name: "octo/example",
+        description: "Example repo",
+        html_url: "https://github.com/octo/example",
+        language: "TypeScript",
+        stargazers_count: 99,
+        forks_count: 12,
+        created_at: "2026-05-20T00:00:00Z",
+        owner: { avatar_url: "https://example.com/avatar.png" }
+      }
+    ]
+  });
+
+  assert.deepEqual(repos[0], {
+    id: 1,
+    name: "octo/example",
+    description: "Example repo",
+    url: "https://github.com/octo/example",
+    language: "TypeScript",
+    stars: 99,
+    forks: 12,
+    createdAt: "2026-05-20T00:00:00Z",
+    ownerAvatar: "https://example.com/avatar.png"
+  });
+});

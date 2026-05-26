@@ -50,6 +50,18 @@ location /api/ai-news {
 }
 ```
 
+GitHub 近期热门模块需要再加一个代理：
+
+```nginx
+location /api/github-trending {
+    proxy_pass https://api.github.com/search/repositories;
+    proxy_ssl_server_name on;
+    proxy_set_header Host api.github.com;
+    proxy_set_header User-Agent "F9-Space";
+    proxy_set_header Accept "application/vnd.github+json";
+}
+```
+
 放到你的 `server { ... }` 里面，然后执行：
 
 ```bash

@@ -88,6 +88,35 @@
     return `/api/ai-news?${params.toString()}`;
   }
 
+  function buildGithubTrendingUrl(options) {
+    const params = new URLSearchParams();
+    const language = options && options.language && options.language !== "all" ? ` language:${options.language}` : "";
+    const days = options && options.days ? Number(options.days) : 7;
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    params.set("q", `created:>${since}${language}`);
+    params.set("sort", "stars");
+    params.set("order", "desc");
+    params.set("per_page", String(options && options.take ? options.take : 12));
+    return `/api/github-trending?${params.toString()}`;
+  }
+
+  function normalizeGithubRepos(payload) {
+    const items = payload && Array.isArray(payload.items) ? payload.items : [];
+    return items.map(function (repo) {
+      return {
+        id: repo.id || repo.full_name,
+        name: repo.full_name || repo.name || "unknown/repo",
+        description: repo.description || "No description yet.",
+        url: repo.html_url || "https://github.com",
+        language: repo.language || "Unknown",
+        stars: repo.stargazers_count || 0,
+        forks: repo.forks_count || 0,
+        createdAt: repo.created_at || "",
+        ownerAvatar: repo.owner && repo.owner.avatar_url ? repo.owner.avatar_url : ""
+      };
+    });
+  }
+
   function normalizeNewsItems(payload) {
     const items = payload && Array.isArray(payload.items) ? payload.items : [];
     return items.map(function (item, index) {
@@ -119,9 +148,11 @@
     NEWS_KEY,
     buildAiNewsProxyUrl,
     buildAiHotUrl,
+    buildGithubTrendingUrl,
     cacheNews,
     deleteNote,
     listNotes,
+    normalizeGithubRepos,
     normalizeNewsItems,
     readCachedNews,
     saveNote,

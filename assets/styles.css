@@ -373,14 +373,22 @@ textarea:focus {
   gap: 16px;
 }
 
+.repo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .news-card,
+.repo-card,
 .note-card {
   border: 1px solid rgba(145, 242, 216, 0.22);
   background: var(--panel-strong);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
 }
 
-.news-card {
+.news-card,
+.repo-card {
   min-height: 250px;
   padding: 18px;
 }
@@ -395,6 +403,7 @@ textarea:focus {
 }
 
 .news-card h3,
+.repo-card h3,
 .note-card h3 {
   margin: 16px 0 10px;
   font-size: 1.22rem;
@@ -402,17 +411,29 @@ textarea:focus {
 }
 
 .news-card p,
+.repo-card p,
 .note-card p {
   color: var(--muted);
   line-height: 1.76;
 }
 
-.news-card a {
+.news-card a,
+.repo-card a {
   display: inline-block;
   margin-top: 14px;
   color: var(--mint);
   font-family: "Orbitron", sans-serif;
   font-size: 0.82rem;
+}
+
+.repo-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  color: var(--amber);
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.75rem;
 }
 
 .preview-wrap {
@@ -532,7 +553,8 @@ textarea:focus {
     position: static;
   }
 
-  .news-grid {
+  .news-grid,
+  .repo-grid {
     grid-template-columns: 1fr;
   }
 }

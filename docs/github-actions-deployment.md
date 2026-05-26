@@ -54,6 +54,14 @@ server {
         proxy_set_header Accept "application/json";
     }
 
+    location /api/github-trending {
+        proxy_pass https://api.github.com/search/repositories;
+        proxy_ssl_server_name on;
+        proxy_set_header Host api.github.com;
+        proxy_set_header User-Agent "F9-Space";
+        proxy_set_header Accept "application/vnd.github+json";
+    }
+
     location ~* \.(css|js|png|jpg|jpeg|gif|svg|ico|webp)$ {
         expires 7d;
         add_header Cache-Control "public";

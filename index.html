@@ -21,6 +21,7 @@
       </a>
       <div class="nav-links">
         <a href="#briefing">AI Briefing</a>
+        <a href="#github">GitHub</a>
         <a href="#notes">Notes</a>
       </div>
     </nav>
@@ -93,9 +94,47 @@
       </div>
     </section>
 
-    <section id="notes" class="shell command-section notes-section">
+    <section id="github" class="shell command-section">
       <div class="section-heading">
         <p class="eyebrow">Function 02</p>
+        <h2>GitHub Radar</h2>
+        <p>抓取近期新建且增长最快的开源仓库。默认看过去 7 天，可以按语言过滤，适合每天扫一眼技术风向。</p>
+      </div>
+
+      <div class="briefing-layout">
+        <form class="control-panel" id="githubForm">
+          <label>
+            <span>语言</span>
+            <select id="githubLanguage">
+              <option value="all">全部语言</option>
+              <option value="JavaScript">JavaScript</option>
+              <option value="TypeScript">TypeScript</option>
+              <option value="Python">Python</option>
+              <option value="Go">Go</option>
+              <option value="Rust">Rust</option>
+              <option value="C++">C++</option>
+            </select>
+          </label>
+          <label>
+            <span>时间窗口</span>
+            <select id="githubDays">
+              <option value="7">近 7 天</option>
+              <option value="3">近 3 天</option>
+              <option value="14">近 14 天</option>
+              <option value="30">近 30 天</option>
+            </select>
+          </label>
+          <button type="submit">扫描仓库</button>
+          <p id="githubStatus" class="status-text">等待扫描 GitHub Radar。</p>
+        </form>
+
+        <div class="repo-grid" id="repoGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="notes" class="shell command-section notes-section">
+      <div class="section-heading">
+        <p class="eyebrow">Function 03</p>
         <h2>Chronicle Notes</h2>
         <p>文本和图片都会保存在当前浏览器。适合日记、灵感、素材备忘；后续可平滑迁移到云数据库。</p>
       </div>
