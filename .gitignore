@@ -1,0 +1,15 @@
+# Local secrets
+*.pem
+*.key
+.env
+.env.*
+
+# Generated deployment bundles
+*.zip
+*.tar
+*.tar.gz
+
+# Local/runtime noise
+node_modules/
+.DS_Store
+Thumbs.db

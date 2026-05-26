@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>F9 Space | Personal Command Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="scanline" aria-hidden="true"></div>
+
+  <header class="shell hero">
+    <nav class="topbar" aria-label="Primary">
+      <a class="brand" href="#home" aria-label="F9 Space home">
+        <span class="brand-mark">F9</span>
+        <span>Space</span>
+      </a>
+      <div class="nav-links">
+        <a href="#briefing">AI Briefing</a>
+        <a href="#notes">Notes</a>
+      </div>
+    </nav>
+
+    <section id="home" class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Personal command deck</p>
+        <h1>把日常、情报和灵感收束到一座私人星港。</h1>
+        <p class="hero-text">
+          首页负责漂亮地唤醒状态，核心服务区负责每天的 AI 情报和随手记录。首版先跑在本地，后续用腾讯云函数接管定时新闻缓存。
+        </p>
+        <div class="hero-actions">
+          <a class="primary-action" href="#briefing">查看今日情报</a>
+          <a class="secondary-action" href="#notes">写一条笔记</a>
+        </div>
+      </div>
+
+      <div class="ship-panel" aria-label="Animated ship status">
+        <div class="orbit-ring ring-one"></div>
+        <div class="orbit-ring ring-two"></div>
+        <div class="core-ship">
+          <span class="ship-wing left"></span>
+          <span class="ship-body"></span>
+          <span class="ship-wing right"></span>
+          <span class="ship-flame"></span>
+        </div>
+        <div class="hud-card hud-one">
+          <span>Signal</span>
+          <strong id="signalCount">--</strong>
+        </div>
+        <div class="hud-card hud-two">
+          <span>Notes</span>
+          <strong id="noteCount">0</strong>
+        </div>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section id="briefing" class="shell command-section">
+      <div class="section-heading">
+        <p class="eyebrow">Function 01</p>
+        <h2>AI Briefing</h2>
+        <p>接入 Khazix Skills 的 AI HOT 数据源。现在可直接拉取公开 API；长期部署时建议由腾讯云函数定时缓存后给前端读取。</p>
+      </div>
+
+      <div class="briefing-layout">
+        <form class="control-panel" id="newsForm">
+          <label>
+            <span>分类</span>
+            <select id="newsCategory">
+              <option value="all">精选全部</option>
+              <option value="ai-models">模型发布</option>
+              <option value="ai-products">产品更新</option>
+              <option value="industry">行业动态</option>
+              <option value="paper">论文研究</option>
+              <option value="tip">技巧观点</option>
+            </select>
+          </label>
+          <label>
+            <span>关键词</span>
+            <input id="newsQuery" type="search" placeholder="OpenAI / Sora / RAG">
+          </label>
+          <button type="submit">刷新情报</button>
+          <button type="button" id="useDemoNews">载入演示</button>
+          <p id="newsStatus" class="status-text">等待发起情报扫描。</p>
+        </form>
+
+        <div class="news-grid" id="newsGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="notes" class="shell command-section notes-section">
+      <div class="section-heading">
+        <p class="eyebrow">Function 02</p>
+        <h2>Chronicle Notes</h2>
+        <p>文本和图片都会保存在当前浏览器。适合日记、灵感、素材备忘；后续可平滑迁移到云数据库。</p>
+      </div>
+
+      <div class="notes-layout">
+        <form class="note-editor" id="noteForm">
+          <input type="hidden" id="noteId">
+          <label>
+            <span>标题</span>
+            <input id="noteTitle" type="text" placeholder="今天值得记住什么？" maxlength="80">
+          </label>
+          <label>
+            <span>内容</span>
+            <textarea id="noteBody" rows="8" placeholder="写下想法、链接、复盘、梦境、任务线索..."></textarea>
+          </label>
+          <label>
+            <span>图片</span>
+            <input id="noteImage" type="file" accept="image/*">
+          </label>
+          <div class="preview-wrap" id="imagePreviewWrap" hidden>
+            <img id="imagePreview" alt="Note image preview">
+            <button type="button" id="clearImage">移除图片</button>
+          </div>
+          <div class="editor-actions">
+            <button type="submit">保存笔记</button>
+            <button type="button" id="resetNote">清空编辑</button>
+          </div>
+        </form>
+
+        <div class="note-list-panel">
+          <div class="note-search">
+            <input id="noteSearch" type="search" placeholder="搜索笔记">
+          </div>
+          <div id="noteList" class="note-list" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <span>F9 Space</span>
+    <span>Static frontend now. Tencent Cloud API later.</span>
+  </footer>
+
+  <script src="assets/app-core.js"></script>
+  <script src="assets/main.js"></script>
+</body>
+</html>

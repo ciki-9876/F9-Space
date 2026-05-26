@@ -1,0 +1,81 @@
+name: Deploy F9 Space
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: f9-space-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run tests
+        run: node --test tests/app-core.test.js
+
+      - name: Build static bundle
+        run: tar -czf f9-space-site.tar.gz index.html assets docs
+
+      - name: Prepare SSH
+        env:
+          TENCENT_HOST: ${{ secrets.TENCENT_HOST }}
+          TENCENT_SSH_KEY: ${{ secrets.TENCENT_SSH_KEY }}
+          TENCENT_PORT: ${{ secrets.TENCENT_PORT }}
+        run: |
+          test -n "$TENCENT_HOST"
+          test -n "$TENCENT_SSH_KEY"
+          mkdir -p ~/.ssh
+          printf '%s\n' "$TENCENT_SSH_KEY" > ~/.ssh/tencent_deploy_key
+          chmod 600 ~/.ssh/tencent_deploy_key
+          ssh-keyscan -p "${TENCENT_PORT:-22}" "$TENCENT_HOST" >> ~/.ssh/known_hosts
+
+      - name: Upload bundle
+        env:
+          TENCENT_HOST: ${{ secrets.TENCENT_HOST }}
+          TENCENT_USER: ${{ secrets.TENCENT_USER }}
+          TENCENT_PORT: ${{ secrets.TENCENT_PORT }}
+        run: |
+          scp -P "${TENCENT_PORT:-22}" -i ~/.ssh/tencent_deploy_key \
+            f9-space-site.tar.gz \
+            "${TENCENT_USER:-root}@${TENCENT_HOST}:/tmp/f9-space-site.tar.gz"
+
+      - name: Release on server
+        env:
+          TENCENT_HOST: ${{ secrets.TENCENT_HOST }}
+          TENCENT_USER: ${{ secrets.TENCENT_USER }}
+          TENCENT_PORT: ${{ secrets.TENCENT_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          ssh -p "${TENCENT_PORT:-22}" -i ~/.ssh/tencent_deploy_key \
+            "${TENCENT_USER:-root}@${TENCENT_HOST}" \
+            "DEPLOY_PATH='${DEPLOY_PATH:-/var/www/f9-space}' bash -s" <<'REMOTE'
+          set -euo pipefail
+          if [ "$(id -u)" -eq 0 ]; then
+            SUDO=""
+          else
+            SUDO="sudo"
+          fi
+
+          $SUDO mkdir -p "$DEPLOY_PATH"
+          TMP_DIR="$(mktemp -d)"
+          tar -xzf /tmp/f9-space-site.tar.gz -C "$TMP_DIR"
+          $SUDO rm -rf "$DEPLOY_PATH"/*
+          $SUDO cp -R "$TMP_DIR"/. "$DEPLOY_PATH"/
+          $SUDO chown -R www-data:www-data "$DEPLOY_PATH" || true
+          $SUDO nginx -t
+          $SUDO systemctl reload nginx
+          rm -rf "$TMP_DIR" /tmp/f9-space-site.tar.gz
+          REMOTE
