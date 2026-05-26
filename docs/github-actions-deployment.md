@@ -80,7 +80,7 @@ systemctl reload nginx
 
 ```text
 TENCENT_HOST=43.160.215.184
-TENCENT_USER=root
+TENCENT_USER=ubuntu
 TENCENT_PORT=22
 DEPLOY_PATH=/var/www/f9-space
 TENCENT_SSH_KEY=<你的服务器 SSH 私钥完整内容>
