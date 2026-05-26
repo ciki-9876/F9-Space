@@ -35,8 +35,14 @@ jobs:
           TENCENT_SSH_KEY: ${{ secrets.TENCENT_SSH_KEY }}
           TENCENT_PORT: ${{ secrets.TENCENT_PORT }}
         run: |
-          test -n "$TENCENT_HOST"
-          test -n "$TENCENT_SSH_KEY"
+          if [ -z "$TENCENT_HOST" ]; then
+            echo "::error::Missing GitHub secret: TENCENT_HOST"
+            exit 1
+          fi
+          if [ -z "$TENCENT_SSH_KEY" ]; then
+            echo "::error::Missing GitHub secret: TENCENT_SSH_KEY"
+            exit 1
+          fi
           mkdir -p ~/.ssh
           printf '%s\n' "$TENCENT_SSH_KEY" > ~/.ssh/tencent_deploy_key
           chmod 600 ~/.ssh/tencent_deploy_key
