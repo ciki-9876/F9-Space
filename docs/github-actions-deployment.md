@@ -123,7 +123,7 @@ git push origin main
 部署完成后访问：
 
 ```text
-http://43.160.215.184
+http://43.160.215.184:8877/
 ```
 
 如果已经配置域名和 HTTPS：
@@ -131,3 +131,5 @@ http://43.160.215.184
 ```text
 https://f9aigc.icu
 ```
+
+当前协作约定见 `docs/collaboration.md`：Codex 维护 `8877` 端口，不改其他协作者端口。
