@@ -46,7 +46,10 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "$TENCENT_SSH_KEY" > ~/.ssh/tencent_deploy_key
           chmod 600 ~/.ssh/tencent_deploy_key
+          ssh-keygen -y -f ~/.ssh/tencent_deploy_key > /dev/null
+          echo "SSH key format is valid"
           ssh-keyscan -p "${TENCENT_PORT:-22}" "$TENCENT_HOST" >> ~/.ssh/known_hosts
+          echo "Host key scan completed"
 
       - name: Upload bundle
         env:
