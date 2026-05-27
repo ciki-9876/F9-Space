@@ -21,7 +21,7 @@
       </a>
       <div class="nav-links">
         <a href="#ai-config">AI Config</a>
-        <a href="#standards">Standards</a>
+        <a href="standards.html">Standards</a>
         <a href="#briefing">AI Briefing</a>
         <a href="#github">GitHub</a>
         <a href="#notes">Notes</a>
@@ -86,57 +86,6 @@
         <button type="submit">保存配置</button>
         <p id="aiConfigStatus" class="status-text">等待配置 AI API。</p>
       </form>
-    </section>
-
-    <section id="standards" class="shell command-section standards-section">
-      <div class="section-heading">
-        <p class="eyebrow">Temporary standards</p>
-        <h2>Design Tokens</h2>
-        <p>临时规范入口。先固定第一版设计令牌，后续再补技术规范、UI 规则和需求验收流程。</p>
-      </div>
-
-      <div class="token-layout">
-        <article class="token-panel">
-          <h3>Color</h3>
-          <div class="token-list">
-            <div class="token-row"><span class="swatch bg"></span><strong>--bg</strong><code>#08100f</code><em>页面底色</em></div>
-            <div class="token-row"><span class="swatch panel"></span><strong>--panel</strong><code>rgba(14,24,23,.76)</code><em>控制面板</em></div>
-            <div class="token-row"><span class="swatch mint"></span><strong>--mint</strong><code>#75ffd7</code><em>主行动/高亮</em></div>
-            <div class="token-row"><span class="swatch amber"></span><strong>--amber</strong><code>#ffc857</code><em>状态/计数</em></div>
-            <div class="token-row"><span class="swatch coral"></span><strong>--coral</strong><code>#ff6f61</code><em>强调/危险</em></div>
-          </div>
-        </article>
-
-        <article class="token-panel">
-          <h3>Typography</h3>
-          <div class="token-list">
-            <div class="token-row"><strong>Display</strong><code>Orbitron 700/800</code><em>HUD、品牌、数字</em></div>
-            <div class="token-row"><strong>Body</strong><code>Noto Serif SC 500</code><em>中文正文</em></div>
-            <div class="token-row"><strong>H1</strong><code>clamp(3.2rem,9vw,7.8rem)</code><em>仅首页主标题</em></div>
-            <div class="token-row"><strong>H2</strong><code>clamp(2.1rem,5vw,4.5rem)</code><em>模块标题</em></div>
-          </div>
-        </article>
-
-        <article class="token-panel">
-          <h3>Surface</h3>
-          <div class="token-list">
-            <div class="token-row"><strong>Card radius</strong><code>0px</code><em>保持硬边星港风格</em></div>
-            <div class="token-row"><strong>Line</strong><code>1px rgba(145,242,216,.22)</code><em>所有边框</em></div>
-            <div class="token-row"><strong>Shadow</strong><code>0 24px 80px rgba(0,0,0,.42)</code><em>浮层/面板</em></div>
-            <div class="token-row"><strong>Card max</strong><code>360px + overflow auto</code><em>信息卡片阅读上限</em></div>
-          </div>
-        </article>
-
-        <article class="token-panel">
-          <h3>Interaction</h3>
-          <div class="token-list">
-            <div class="token-row"><strong>Primary</strong><code>mint → amber gradient</code><em>提交、生成、分析</em></div>
-            <div class="token-row"><strong>Secondary</strong><code>transparent panel</code><em>访问、取消、辅助</em></div>
-            <div class="token-row"><strong>Motion</strong><code>160ms ease</code><em>按钮悬浮反馈</em></div>
-            <div class="token-row"><strong>Modal</strong><code>dialog + blurred backdrop</code><em>详情和 AI 分析</em></div>
-          </div>
-        </article>
-      </div>
     </section>
 
     <section id="briefing" class="shell command-section">
