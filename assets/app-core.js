@@ -90,20 +90,40 @@
   }
 
   function buildGithubTrendingUrl(options) {
-    const params = new URLSearchParams();
-    const language = options && options.language && options.language !== "all" ? ` language:${options.language}` : "";
-    const days = options && options.days ? Number(options.days) : 7;
-    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-    params.set("q", `created:>${since}${language}`);
-    params.set("sort", "stars");
+    var mode = options && options.mode ? options.mode : "trending";
+    var language = options && options.language ? options.language : "all";
+    var days = options && options.days ? Number(options.days) : 7;
+    var sortMode = options && options.sortMode ? options.sortMode : "stars";
+    var take = options && options.take ? Number(options.take) : 12;
+
+    var since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    var langFilter = (language && language !== "all") ? " language:" + language : "";
+    var q;
+
+    if (mode === "quality") {
+      q = "created:>" + since + langFilter + " stars:>=50 fork:false";
+    } else if (mode === "new") {
+      q = "created:>" + since + langFilter + " fork:false";
+    } else if (mode === "fastest") {
+      q = "created:>" + since + langFilter + " stars:>=10 fork:false";
+      sortMode = "stars";
+    } else {
+      q = "created:>" + since + langFilter + " stars:>=5 fork:false";
+    }
+
+    var params = new URLSearchParams();
+    params.set("q", q);
+    params.set("sort", sortMode === "stars" ? "stars" : sortMode === "forks" ? "forks" : "updated");
     params.set("order", "desc");
-    params.set("per_page", String(options && options.take ? options.take : 12));
-    return `/api/github-trending?${params.toString()}`;
+    params.set("per_page", String(take));
+    return "/api/github-trending?" + params.toString();
   }
 
   function normalizeGithubRepos(payload) {
-    const items = payload && Array.isArray(payload.items) ? payload.items : [];
+    var items = payload && Array.isArray(payload.items) ? payload.items : [];
     return items.map(function (repo) {
+      var topics = (repo.topics && Array.isArray(repo.topics)) ? repo.topics : [];
+      var license = (repo.license && repo.license.spdx_id) ? repo.license.spdx_id : "";
       return {
         id: repo.id || repo.full_name,
         name: repo.full_name || repo.name || "unknown/repo",
@@ -112,8 +132,18 @@
         language: repo.language || "Unknown",
         stars: repo.stargazers_count || 0,
         forks: repo.forks_count || 0,
+        openIssues: repo.open_issues_count || 0,
+        watchers: repo.watchers_count || 0,
         createdAt: repo.created_at || "",
-        ownerAvatar: repo.owner && repo.owner.avatar_url ? repo.owner.avatar_url : ""
+        updatedAt: repo.updated_at || "",
+        pushedAt: repo.pushed_at || "",
+        ownerAvatar: repo.owner && repo.owner.avatar_url ? repo.owner.avatar_url : "",
+        ownerUrl: repo.owner && repo.owner.html_url ? repo.owner.html_url : "",
+        topics: topics,
+        license: license,
+        isFork: repo.fork || false,
+        homepage: repo.homepage || "",
+        defaultBranch: repo.default_branch || "main"
       };
     });
   }
