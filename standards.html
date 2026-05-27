@@ -6,7 +6,7 @@
   <title>F9 Space Standards</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css?v=20260527-standards-page">
 </head>
 <body class="standards-page">
@@ -82,8 +82,8 @@
           <article id="typography" class="token-panel">
             <h3>Typography</h3>
             <div class="token-list">
-              <div class="token-row"><strong>Display</strong><code>Orbitron 700/800</code><em>HUD、品牌、数字</em></div>
-              <div class="token-row"><strong>Body</strong><code>Noto Serif SC 500</code><em>中文正文</em></div>
+              <div class="token-row"><strong>Display</strong><code>Manrope 700/800</code><em>标题、品牌、数字</em></div>
+              <div class="token-row"><strong>Body</strong><code>system sans-serif</code><em>中文正文与表单</em></div>
               <div class="token-row"><strong>H1</strong><code>clamp(3.2rem,9vw,7.8rem)</code><em>仅首页主标题</em></div>
               <div class="token-row"><strong>H2</strong><code>clamp(2.1rem,5vw,4.5rem)</code><em>模块标题</em></div>
             </div>
@@ -120,6 +120,11 @@
         <div class="component-grid">
           <article id="buttons" class="component-spec">
             <h3>按钮 Button</h3>
+            <div class="component-demo">
+              <button type="button">分析仓库</button>
+              <a class="demo-secondary" href="#">访问仓库</a>
+              <button class="demo-quiet" type="button">清空</button>
+            </div>
             <p>用于明确命令。主按钮只用于提交、刷新、分析、保存；次按钮用于访问、取消、清空。</p>
             <ul>
               <li>高度不低于 44px，移动端可换行。</li>
@@ -129,6 +134,14 @@
           </article>
           <article id="cards" class="component-spec">
             <h3>信息卡片 Card</h3>
+            <div class="component-demo">
+              <article class="demo-info-card">
+                <div class="card-meta"><span>TypeScript</span><time>05/27 14:20</time></div>
+                <h4>open-source/radar</h4>
+                <p>卡片顶部显示元信息，中部显示标题和摘要，底部承载访问或分析等操作。</p>
+                <div class="repo-stats"><span>1,280 stars</span><span>96 forks</span></div>
+              </article>
+            </div>
             <p>用于 AI 情报、GitHub 仓库、笔记列表。卡片只承载一个对象，不嵌套卡片。</p>
             <ul>
               <li>最大高度 360px，超出卡片内滚动。</li>
@@ -138,6 +151,11 @@
           </article>
           <article id="forms" class="component-spec">
             <h3>表单 Form</h3>
+            <div class="component-demo demo-form">
+              <label><span>Base URL</span><input type="url" value="https://api.openai.com/v1"></label>
+              <label><span>Model</span><input type="text" value="gpt-4.1-mini"></label>
+              <button type="button">保存配置</button>
+            </div>
             <p>用于配置、筛选、笔记编辑。表单应清晰标注输入目的，并提供保存后的状态反馈。</p>
             <ul>
               <li>敏感信息使用 password 输入。</li>
@@ -147,6 +165,12 @@
           </article>
           <article id="dialogs" class="component-spec">
             <h3>弹窗 Dialog</h3>
+            <div class="component-demo">
+              <div class="demo-dialog">
+                <div class="dialog-head"><strong>Repository analysis</strong><button type="button">关闭</button></div>
+                <p>这里展示 AI 生成的中文分析。正文区域固定高度，长内容在内部滚动。</p>
+              </div>
+            </div>
             <p>用于查看分析结果和短流程确认，不承载复杂编辑。</p>
             <ul>
               <li>最大宽度 760px，正文区域可滚动。</li>
@@ -156,6 +180,12 @@
           </article>
           <article id="navigation" class="component-spec">
             <h3>导航 Navigation</h3>
+            <div class="component-demo demo-nav">
+              <a href="#">AI Config</a>
+              <a href="#">GitHub</a>
+              <a href="#">Notes</a>
+              <a href="#">Standards</a>
+            </div>
             <p>顶部导航只放主要入口；规范页面使用左侧目录承载二级结构。</p>
             <ul>
               <li>首页模块入口不超过 5 个。</li>
