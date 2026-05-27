@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>F9 Space Standards</title>
-  <link rel="stylesheet" href="assets/styles.css?v=20260527-standards-page">
+  <link rel="stylesheet" href="assets/styles.css?v=20260527-standards-v3">
 </head>
 <body class="standards-page">
   <canvas id="starfield" aria-hidden="true"></canvas>
@@ -17,7 +17,7 @@
     </a>
     <nav class="nav-links" aria-label="Standards navigation">
       <a href="index.html">Command Deck</a>
-      <a href="#tokens">Tokens</a>
+      <a href="#global">Global</a>
       <a href="#components">Components</a>
       <a href="#patterns">Patterns</a>
     </nav>
@@ -26,43 +26,45 @@
   <div class="standards-shell">
     <aside class="standards-sidebar">
       <div class="sidebar-group">
-        <strong>Design Tokens</strong>
-        <a href="#tokens">概览</a>
-        <a href="#color">色彩</a>
+        <strong>Global Style</strong>
+        <a href="#overview">介绍</a>
+        <a href="#tokens">设计令牌</a>
         <a href="#layout">布局</a>
-        <a href="#typography">字体</a>
-        <a href="#surface">表面与阴影</a>
+        <a href="#iconography">图标</a>
+        <a href="#surface">暗色与阴影</a>
         <a href="#motion">动效</a>
       </div>
       <div class="sidebar-group">
-        <strong>Component Spec</strong>
+        <strong>Components</strong>
         <a href="#buttons">按钮</a>
-        <a href="#cards">信息卡片</a>
-        <a href="#forms">表单</a>
-        <a href="#dialogs">弹窗</a>
         <a href="#navigation">导航</a>
+        <a href="#feedback">反馈</a>
+        <a href="#entry">数据录入</a>
+        <a href="#display">数据展示</a>
+        <a href="#list">数据列表</a>
+        <a href="#detail">详情页</a>
       </div>
       <div class="sidebar-group">
-        <strong>Patterns</strong>
-        <a href="#patterns">反馈</a>
-        <a href="#data-entry">数据录入</a>
-        <a href="#data-display">数据展示</a>
+        <strong>Rules</strong>
+        <a href="#format">数据格式</a>
         <a href="#writing">文案</a>
+        <a href="#principles">设计原则</a>
       </div>
     </aside>
 
     <main class="standards-content">
-      <section class="standards-hero">
-        <p class="eyebrow">Temporary standards / v0.1</p>
+      <section id="overview" class="standards-hero">
+        <p class="eyebrow">Standards / v0.3</p>
         <h1>F9 Space 设计令牌与组件规范</h1>
-        <p>参考 Ant Design 的规范类型组织信息，但视觉、语义和组件边界全部服务于 F9 Space 的个人命令甲板体验。</p>
+        <p>本页参考 Ant Design 的规范组织方式，覆盖全局样式、布局、导航、反馈、数据录入、数据展示、列表、详情和按钮等类型；但色彩、字体、空间感和组件外观全部使用 F9 Space 自己的星港体系。</p>
       </section>
 
-      <section id="tokens" class="standards-section">
+      <section id="global" class="standards-section">
+        <span id="tokens" class="anchor-target" aria-hidden="true"></span>
         <div class="section-heading">
-          <p class="eyebrow">Design Tokens</p>
-          <h2>令牌总览</h2>
-          <p>令牌是后续 UI 迭代的最小共识：颜色、排版、间距、表面、动效和组件状态都从这里派生。</p>
+          <p class="eyebrow">Global Style</p>
+          <h2>设计令牌</h2>
+          <p>令牌是后续 UI 迭代的最小共识。新增组件优先复用这些变量，再考虑局部扩展。</p>
         </div>
         <div class="token-layout">
           <article id="color" class="token-panel">
@@ -72,7 +74,7 @@
               <div class="token-row"><span class="swatch panel"></span><strong>--panel</strong><code>rgba(14,24,23,.76)</code><em>控制面板</em></div>
               <div class="token-row"><span class="swatch mint"></span><strong>--mint</strong><code>#75ffd7</code><em>主行动/高亮</em></div>
               <div class="token-row"><span class="swatch amber"></span><strong>--amber</strong><code>#ffc857</code><em>状态/计数</em></div>
-              <div class="token-row"><span class="swatch coral"></span><strong>--coral</strong><code>#ff6f61</code><em>强调/危险</em></div>
+              <div class="token-row"><span class="swatch coral"></span><strong>--coral</strong><code>#ff6f61</code><em>警示/危险</em></div>
             </div>
           </article>
 
@@ -80,40 +82,80 @@
             <h3>Typography</h3>
             <div class="token-list">
               <div class="token-row"><strong>Display</strong><code>Genshin font stack</code><em>标题、品牌、数字</em></div>
-              <div class="token-row"><strong>Body</strong><code>Genshin font stack</code><em>中文正文与表单</em></div>
+              <div class="token-row"><strong>Body</strong><code>Genshin font stack</code><em>正文、表单、说明</em></div>
               <div class="token-row"><strong>H1</strong><code>clamp(3.2rem,9vw,7.8rem)</code><em>仅首页主标题</em></div>
               <div class="token-row"><strong>H2</strong><code>clamp(2.1rem,5vw,4.5rem)</code><em>模块标题</em></div>
-            </div>
-          </article>
-
-          <article id="layout" class="token-panel">
-            <h3>Layout</h3>
-            <div class="token-list">
-              <div class="token-row"><strong>Shell</strong><code>min(1180px, 100% - 40px)</code><em>页面主容器</em></div>
-              <div class="token-row"><strong>Module grid</strong><code>320px + 1fr</code><em>控制区 + 结果区</em></div>
-              <div class="token-row"><strong>Gap</strong><code>16 / 24 / 48px</code><em>卡片、模块、首屏</em></div>
-              <div class="token-row"><strong>Break</strong><code>900px / 620px</code><em>平板与手机断点</em></div>
             </div>
           </article>
 
           <article id="surface" class="token-panel">
             <h3>Surface</h3>
             <div class="token-list">
-              <div class="token-row"><strong>Card radius</strong><code>0px</code><em>保持硬边星港风格</em></div>
+              <div class="token-row"><strong>Radius</strong><code>0px</code><em>硬边 HUD 风格</em></div>
               <div class="token-row"><strong>Line</strong><code>1px rgba(145,242,216,.22)</code><em>所有边框</em></div>
               <div class="token-row"><strong>Shadow</strong><code>0 24px 80px rgba(0,0,0,.42)</code><em>浮层/面板</em></div>
-              <div class="token-row"><strong>Card max</strong><code>360px + overflow auto</code><em>信息卡片阅读上限</em></div>
+              <div class="token-row"><strong>Scrollable</strong><code>360px max</code><em>信息卡片阅读上限</em></div>
             </div>
           </article>
+
+          <article id="motion" class="token-panel">
+            <h3>Motion</h3>
+            <div class="token-list">
+              <div class="token-row"><strong>Hover</strong><code>160ms ease</code><em>按钮和链接反馈</em></div>
+              <div class="token-row"><strong>Ambient</strong><code>3.8s ease-in-out</code><em>飞船悬浮</em></div>
+              <div class="token-row"><strong>Backdrop</strong><code>blur(5px)</code><em>弹窗背景</em></div>
+              <div class="token-row"><strong>Loading</strong><code>pulse / scan</code><em>等待态</em></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="layout" class="standards-section">
+        <div class="section-heading">
+          <p class="eyebrow">Layout</p>
+          <h2>布局规范</h2>
+          <p>F9 Space 的页面默认采用“说明区 + 控制面板 + 结果区”的任务布局，适合个人工作台持续迭代。</p>
+        </div>
+        <div class="spec-demo-grid">
+          <article class="layout-demo">
+            <div class="demo-block wide">Section heading</div>
+            <div class="demo-block side">Control panel 320px</div>
+            <div class="demo-block main">Result grid minmax(0, 1fr)</div>
+          </article>
+          <article class="component-spec">
+            <h3>布局规则</h3>
+            <ul>
+              <li>页面主容器使用 <code>min(1180px, 100% - 40px)</code>。</li>
+              <li>功能模块优先使用左控制、右结果布局。</li>
+              <li>移动端 900px 以下改为单列。</li>
+              <li>不要在页面 section 外再套浮动大卡片。</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="iconography" class="standards-section">
+        <div class="section-heading">
+          <p class="eyebrow">Iconography</p>
+          <h2>图标规范</h2>
+          <p>图标用于提高识别效率，不作为装饰堆叠。纯图标按钮必须有 hover tooltip 或文本替代。</p>
+        </div>
+        <div class="component-demo icon-demo">
+          <button type="button" aria-label="刷新">↻</button>
+          <button type="button" aria-label="搜索">⌕</button>
+          <button type="button" aria-label="保存">▣</button>
+          <button type="button" aria-label="关闭">×</button>
+          <span>仅在空间紧张或含义非常稳定时使用纯图标。</span>
         </div>
       </section>
 
       <section id="components" class="standards-section">
         <div class="section-heading">
           <p class="eyebrow">Component Spec</p>
-          <h2>组件规范</h2>
-          <p>组件规范定义何时使用、基本结构、状态和禁用事项。后续新增组件必须先进入这里。</p>
+          <h2>组件样式</h2>
+          <p>以下组件样式对应 F9 Space 当前和近期会用到的交互。每个类型都包含样例和约束。</p>
         </div>
+
         <div class="component-grid">
           <article id="buttons" class="component-spec">
             <h3>按钮 Button</h3>
@@ -121,60 +163,15 @@
               <button type="button">分析仓库</button>
               <a class="demo-secondary" href="#">访问仓库</a>
               <button class="demo-quiet" type="button">清空</button>
+              <button class="demo-icon" type="button" aria-label="刷新">↻</button>
             </div>
-            <p>用于明确命令。主按钮只用于提交、刷新、分析、保存；次按钮用于访问、取消、清空。</p>
             <ul>
-              <li>高度不低于 44px，移动端可换行。</li>
-              <li>主按钮使用 mint → amber 渐变。</li>
-              <li>危险动作暂不使用红色填充，先用二次确认或低强调按钮。</li>
+              <li>一个操作区最多一个主按钮。</li>
+              <li>主按钮用于提交、刷新、分析、保存。</li>
+              <li>文字按钮用于表格操作列或低风险辅助动作。</li>
             </ul>
           </article>
-          <article id="cards" class="component-spec">
-            <h3>信息卡片 Card</h3>
-            <div class="component-demo">
-              <article class="demo-info-card">
-                <div class="card-meta"><span>TypeScript</span><time>05/27 14:20</time></div>
-                <h4>open-source/radar</h4>
-                <p>卡片顶部显示元信息，中部显示标题和摘要，底部承载访问或分析等操作。</p>
-                <div class="repo-stats"><span>1,280 stars</span><span>96 forks</span></div>
-              </article>
-            </div>
-            <p>用于 AI 情报、GitHub 仓库、笔记列表。卡片只承载一个对象，不嵌套卡片。</p>
-            <ul>
-              <li>最大高度 360px，超出卡片内滚动。</li>
-              <li>顶部放来源/时间元信息，中部标题与摘要，底部操作。</li>
-              <li>卡片圆角保持 0px，延续 HUD 面板感。</li>
-            </ul>
-          </article>
-          <article id="forms" class="component-spec">
-            <h3>表单 Form</h3>
-            <div class="component-demo demo-form">
-              <label><span>Base URL</span><input type="url" value="https://api.openai.com/v1"></label>
-              <label><span>Model</span><input type="text" value="gpt-4.1-mini"></label>
-              <button type="button">保存配置</button>
-            </div>
-            <p>用于配置、筛选、笔记编辑。表单应清晰标注输入目的，并提供保存后的状态反馈。</p>
-            <ul>
-              <li>敏感信息使用 password 输入。</li>
-              <li>配置类表单只保存到本地浏览器时必须说明。</li>
-              <li>提交后必须更新状态文案。</li>
-            </ul>
-          </article>
-          <article id="dialogs" class="component-spec">
-            <h3>弹窗 Dialog</h3>
-            <div class="component-demo">
-              <div class="demo-dialog">
-                <div class="dialog-head"><strong>Repository analysis</strong><button type="button">关闭</button></div>
-                <p>这里展示 AI 生成的中文分析。正文区域固定高度，长内容在内部滚动。</p>
-              </div>
-            </div>
-            <p>用于查看分析结果和短流程确认，不承载复杂编辑。</p>
-            <ul>
-              <li>最大宽度 760px，正文区域可滚动。</li>
-              <li>标题、关闭、主体、底部动作必须齐全。</li>
-              <li>AI 输出使用 pre-wrap 保留段落。</li>
-            </ul>
-          </article>
+
           <article id="navigation" class="component-spec">
             <h3>导航 Navigation</h3>
             <div class="component-demo demo-nav">
@@ -183,31 +180,140 @@
               <a href="#">Notes</a>
               <a href="#">Standards</a>
             </div>
-            <p>顶部导航只放主要入口；规范页面使用左侧目录承载二级结构。</p>
+            <div class="demo-tabs"><span class="active">概览</span><span>结果</span><span>日志</span></div>
             <ul>
-              <li>首页模块入口不超过 5 个。</li>
-              <li>文档类页面允许 sticky sidebar。</li>
-              <li>跨页面入口使用真实链接，不用锚点伪装页面。</li>
+              <li>顶部导航只放一级入口，数量控制在 2-7 个。</li>
+              <li>文档页使用左侧目录承载二级结构。</li>
+              <li>局部内容切换使用 tabs，不跳转页面。</li>
             </ul>
           </article>
+
+          <article id="feedback" class="component-spec">
+            <h3>反馈 Feedback</h3>
+            <div class="component-demo demo-feedback">
+              <div class="demo-alert success">已同步 12 条情报。</div>
+              <div class="demo-alert warning">AI API 未配置。</div>
+              <div class="demo-alert error">代理请求失败，请检查服务器配置。</div>
+            </div>
+            <ul>
+              <li>异步行为必须有等待、成功、失败三态。</li>
+              <li>失败态说明下一步，不只展示错误码。</li>
+              <li>破坏性动作使用确认弹窗或可撤销反馈。</li>
+            </ul>
+          </article>
+
+          <article id="entry" class="component-spec">
+            <h3>数据录入 Data Entry</h3>
+            <div class="component-demo demo-form">
+              <label><span>Base URL</span><input type="url" value="https://api.openai.com/v1"></label>
+              <label><span>Model</span><input type="text" value="gpt-4.1-mini"></label>
+              <label><span>模式</span><select><option>精选</option><option>全部</option></select></label>
+              <button type="button">保存</button>
+            </div>
+            <div class="component-demo compact-controls">
+              <label><input type="checkbox" checked> 仅 500 stars 以上</label>
+              <label><input type="radio" name="window" checked> 7 天</label>
+              <label><input type="radio" name="window"> 30 天</label>
+              <span class="demo-switch">ON</span>
+            </div>
+            <ul>
+              <li>标签必须说明输入目的。</li>
+              <li>敏感字段使用 password 并说明保存位置。</li>
+              <li>选择项超过 5 个时使用下拉。</li>
+            </ul>
+          </article>
+
+          <article id="display" class="component-spec">
+            <h3>数据展示 Data Display</h3>
+            <div class="component-demo display-stack">
+              <table class="demo-table">
+                <thead><tr><th>仓库</th><th>语言</th><th>Stars</th><th>状态</th></tr></thead>
+                <tbody><tr><td>open/radar</td><td>TS</td><td>1,280</td><td>活跃</td></tr></tbody>
+              </table>
+              <div class="demo-collapse"><strong>折叠面板</strong><p>用于隐藏较长说明或低频信息。</p></div>
+              <div class="demo-timeline"><span></span><p>05/27 扫描 GitHub 热门仓库</p></div>
+            </div>
+            <ul>
+              <li>表格适合结构化对比，卡片适合对象展示。</li>
+              <li>空值统一使用 <code>-</code>。</li>
+              <li>时间、状态、操作栏尽量保持完整不换行。</li>
+            </ul>
+          </article>
+
+          <article id="list" class="component-spec">
+            <h3>数据列表 Data List</h3>
+            <div class="component-demo display-stack">
+              <div class="demo-toolbar"><input value="Search repositories"><button type="button">筛选</button><button type="button">新建</button></div>
+              <div class="demo-list-row"><strong>open-source/radar</strong><span>TypeScript · 1,280 stars</span><a href="#">详情</a></div>
+              <div class="demo-pagination"><button type="button">‹</button><span>1 / 8</span><button type="button">›</button></div>
+            </div>
+            <ul>
+              <li>列表页从工具栏、统计、列表、分页顺序组织。</li>
+              <li>搜索高频时放在工具栏首位。</li>
+              <li>返回列表时应保留浏览位置。</li>
+            </ul>
+          </article>
+
+          <article id="detail" class="component-spec">
+            <h3>详情页 Detail</h3>
+            <div class="component-demo display-stack">
+              <div class="demo-description"><span>仓库</span><strong>open-source/radar</strong><span>语言</span><strong>TypeScript</strong><span>License</span><strong>MIT</strong></div>
+              <div class="demo-tabs"><span class="active">概览</span><span>依赖</span><span>风险</span></div>
+            </div>
+            <ul>
+              <li>详情页用于展示完整对象，可发起编辑或分析。</li>
+              <li>复杂详情拆分为 tabs。</li>
+              <li>可分享或沉浸式任务使用独立页面。</li>
+            </ul>
+          </article>
+
+          <article id="dialogs" class="component-spec">
+            <h3>弹窗 Dialog</h3>
+            <div class="component-demo">
+              <div class="demo-dialog">
+                <div class="dialog-head"><strong>Repository analysis</strong><button type="button">关闭</button></div>
+                <p>这里展示 AI 生成的中文分析。正文区域固定高度，长内容在内部滚动。</p>
+              </div>
+            </div>
+            <ul>
+              <li>弹窗用于短流程确认和查看结果。</li>
+              <li>复杂编辑应使用页面或抽屉，而不是弹窗堆叠。</li>
+              <li>弹窗必须有明确关闭动作。</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="format" class="standards-section">
+        <div class="section-heading">
+          <p class="eyebrow">Format</p>
+          <h2>数据格式</h2>
+        </div>
+        <div class="format-grid">
+          <div><strong>日期时间</strong><code>05/27 14:20</code><p>卡片中使用短格式，详情中使用完整时间。</p></div>
+          <div><strong>数字</strong><code>1,280 stars</code><p>大数字使用千分位，保留单位。</p></div>
+          <div><strong>空值</strong><code>-</code><p>表格和描述列表中统一显示。</p></div>
+          <div><strong>状态</strong><code>成功 / 等待 / 失败</code><p>状态文本必须可独立理解。</p></div>
         </div>
       </section>
 
       <section id="patterns" class="standards-section">
         <div class="section-heading">
           <p class="eyebrow">Patterns</p>
-          <h2>交互模式</h2>
+          <h2>设计模式与原则</h2>
         </div>
         <div class="pattern-list">
-          <article><h3>反馈</h3><p>所有异步行为必须有等待、成功、失败三态。失败文案要说明下一步，而不是只显示错误码。</p></article>
-          <article id="data-entry"><h3>数据录入</h3><p>配置项就近解释保存位置；API Key 等敏感值不得写入仓库。</p></article>
-          <article id="data-display"><h3>数据展示</h3><p>列表先给摘要，再给操作。长内容在卡片或弹窗内滚动，不撑爆页面。</p></article>
-          <article id="writing"><h3>文案</h3><p>命令动词统一：刷新、扫描、分析、访问、保存、清空。避免解释 UI 本身。</p></article>
+          <article id="principles"><h3>反馈</h3><p>所有异步行为必须有等待、成功、失败三态。失败文案说明下一步。</p></article>
+          <article><h3>亲密性</h3><p>相关信息靠近；标题、摘要、动作形成清晰局部组。</p></article>
+          <article><h3>对齐</h3><p>控制面板和结果区使用稳定栅格，避免随内容跳动。</p></article>
+          <article><h3>对比</h3><p>主行动、状态、警示分别使用 mint、amber、coral。</p></article>
+          <article><h3>重复</h3><p>卡片、表单、弹窗结构重复，降低学习成本。</p></article>
+          <article id="writing"><h3>文案</h3><p>命令动词统一：刷新、扫描、分析、访问、保存、清空。</p></article>
         </div>
       </section>
     </main>
   </div>
 
-  <script src="assets/standards.js?v=20260527-standards-page"></script>
+  <script src="assets/standards.js?v=20260527-standards-v3"></script>
 </body>
 </html>
