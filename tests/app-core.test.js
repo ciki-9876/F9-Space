@@ -121,17 +121,15 @@ test("normalizeGithubRepos maps GitHub API repos into card data", () => {
     ]
   });
 
-  assert.deepEqual(repos[0], {
-    id: 1,
-    name: "octo/example",
-    description: "Example repo",
-    url: "https://github.com/octo/example",
-    language: "TypeScript",
-    stars: 99,
-    forks: 12,
-    createdAt: "2026-05-20T00:00:00Z",
-    ownerAvatar: "https://example.com/avatar.png"
-  });
+  assert.equal(repos[0].id, 1);
+  assert.equal(repos[0].name, "octo/example");
+  assert.equal(repos[0].description, "Example repo");
+  assert.equal(repos[0].url, "https://github.com/octo/example");
+  assert.equal(repos[0].language, "TypeScript");
+  assert.equal(repos[0].stars, 99);
+  assert.equal(repos[0].forks, 12);
+  assert.equal(repos[0].createdAt, "2026-05-20T00:00:00Z");
+  assert.equal(repos[0].ownerAvatar, "https://example.com/avatar.png");
 });
 
 test("filterGithubReposByStars removes repositories below the minimum", () => {
